@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./Add.css";
-import { assets } from "../../assets/assets";
+import { assets, url as baseUrl } from "../../assets/assets";
 import axios from "axios";
 import { toast } from "react-toastify";
 
 const Add = ({ url }) => {
+  const fileInputRef = useRef(null);
+  const appUrl = url || baseUrl || "http://localhost:4000";
   const [image, setImage] = useState(false);
   const [data, setData] = useState({
     name: "",
@@ -30,7 +32,7 @@ const Add = ({ url }) => {
     formData.append("category", data.category);
     formData.append("price", Number(data.price));
     try {
-      const response = await axios.post(`${url}/api/food/add`, formData);
+      const response = await axios.post(`${appUrl}/api/food/add`, formData);
       if (response.data.success) {
         setData({
           name: "",
@@ -39,14 +41,16 @@ const Add = ({ url }) => {
           price: "",
         });
         setImage(false);
-        event.target.reset();
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
         toast.success(response.data.message);
       } else {
         toast.error(response.data.message);
       }
     } catch (error) {
       console.error(error);
-      toast.error("Error adding food");
+      toast.error(error.response?.data?.message || "Error adding food");
     }
   };
 
@@ -65,6 +69,7 @@ const Add = ({ url }) => {
             onChange={(e) => setImage(e.target.files[0])}
             type="file"
             id="image"
+            ref={fileInputRef}
             hidden
           />
         </div>
@@ -100,11 +105,11 @@ const Add = ({ url }) => {
             >
               <option value="Salad">Salad</option>
               <option value="Rolls">Rolls</option>
-              <option value="Desserts">Desserts</option>
+              <option value="Deserts">Deserts</option>
               <option value="Sandwich">Sandwich</option>
               <option value="Pasta">Pasta</option>
               <option value="Cake">Cake</option>
-              <option value="Pure veg">Pure veg</option>
+              <option value="Pure Veg">Pure Veg</option>
               <option value="Noodles">Noodles</option>
             </select>
           </div>
