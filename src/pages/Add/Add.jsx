@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const Add = ({ url }) => {
   const fileInputRef = useRef(null);
-  const appUrl = url || baseUrl || "https://backend-1-y82j.onrender.com";
+  const appUrl = url || baseUrl || "https://backend-3-thyd.onrender.com";
   const [image, setImage] = useState(false);
   const [data, setData] = useState({
     name: "",
